@@ -38,7 +38,7 @@ This task is split into specialized sub-plans due to the complexity of custom pr
 3.  **Common Groundwork**:
     *   Establish themes, colors, attributes, and standard dimensions. (COMPLETED)
 4.  **The Settings Migration**:
-    *   Migrate `Settings.java` and its custom preferences to AndroidX.
+    *   Migrate `Settings.java` and its custom preferences to AndroidX. (COMPLETED)
 5.  **The Main Activity Migration**:
     *   Update `ForkFront.java` to `AppCompatActivity`. (IN PROGRESS)
 6.  **Window Refactoring**:
