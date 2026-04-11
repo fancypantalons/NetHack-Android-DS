@@ -13,12 +13,10 @@ Replace deprecated Android UI patterns with modern Jetpack components, enabling 
 *   Implement `Theme.Material3` (or `Theme.AppCompat`) in the library's `styles.xml` to support modern system behaviors like dark mode and tinted status bars.
 
 ### 2.2 Settings & Preferences Modernization
-*   **Create `SettingsFragment`**: A new class extending `PreferenceFragmentCompat`.
-*   **Deprecate `Settings.java`**: Convert it into a simple `AppCompatActivity` that hosts the `SettingsFragment`.
-*   **Modernize Custom Preferences**:
-    *   Update `TilesetPreference` to extend `Preference` or `DialogPreference` from `androidx.preference`.
-    *   Update `SliderPreference` to use modern `SeekBar` or `Slider` components.
-*   **Refactor Preference XML**: Update `preferences.xml` to use modern AndroidX preference tags (e.g., `androidx.preference.PreferenceScreen`).
+This task is split into specialized sub-plans due to the complexity of custom preference components:
+*   [Refactoring Settings Architecture](forkfront-modernization-p2-settings-arch.md): Migrate from `PreferenceActivity` to `AppCompatActivity` + `PreferenceFragmentCompat`.
+*   [Refactoring TilesetPreference](forkfront-modernization-p2-tileset-pref.md): Migrate the custom tileset picker to AndroidX.
+*   [Refactoring SliderPreference](forkfront-modernization-p2-slider-pref.md): Migrate the custom slider dialog to AndroidX.
 
 ### 2.3 Fragment-based Window Management
 *   **Problem**: Currently, `NH_State` and `NH_Window` manually manage a stack of `View` objects. This is prone to leaks and state-loss during orientation changes.
@@ -33,14 +31,13 @@ Replace deprecated Android UI patterns with modern Jetpack components, enabling 
 ## 3. Implementation Sequence
 
 1.  **Preparation**:
-    *   Add `androidx.appcompat`, `androidx.preference`, and `androidx.fragment` dependencies to `forkfront/lib/build.gradle`.
+    *   Add `androidx.appcompat`, `androidx.preference`, and `androidx.fragment` dependencies to `forkfront/lib/build.gradle`. (COMPLETED)
 2.  **Infrastructure**:
-    *   Apply `fill_parent` -> `match_parent` and `dip` -> `dp` global replacements.
+    *   Apply `fill_parent` -> `match_parent` and `dip` -> `dp` global replacements. (COMPLETED)
 3.  **The Settings Migration**:
-    *   Migrate `Settings.java` and its custom preferences to AndroidX. This is the least disruptive way to start the migration.
+    *   Migrate `Settings.java` and its custom preferences to AndroidX. This is the current active task.
 4.  **The Main Activity Migration**:
-    *   Update `ForkFront.java` to `AppCompatActivity`.
-    *   Update `styles.xml` to a modern theme.
+    *   Update `ForkFront.java` to `AppCompatActivity`. (IN PROGRESS)
 5.  **Window Refactoring**:
     *   Gradually move `NHW_Menu`, `NHW_Text`, and `NH_Dialog` to use `DialogFragment`.
 
