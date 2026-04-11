@@ -44,7 +44,12 @@ This task is split into specialized sub-plans due to the complexity of custom pr
 6.  **Window Refactoring**:
     *   Gradually move `NHW_Menu`, `NHW_Text`, and `NH_Dialog` to use `DialogFragment`.
 
-## 4. Verification & Testing
-*   **UI Regression**: Ensure all NetHack windows (map, message, status, menu) appear correctly in both portrait and landscape.
-*   **Settings Persistence**: Confirm all user preferences (tilesets, opacity, etc.) are still correctly read and written using the new `PreferenceFragmentCompat`.
-*   **Lifecycle Integrity**: Test rotation during a menu selection to ensure the menu state persists.
+## 4. Safety Strategy: Bridge-and-Replace
+To ensure the application remains functional throughout the migration, we will employ a "bridge-and-replace" approach:
+*   **Side-by-Side Implementation**: Legacy and modern components will coexist. Legacy Activities will be refactored to host new `Fragment` components rather than being deleted immediately.
+*   **Gradual Theme Migration**: Instead of applying a global `AppCompat` theme, we will apply it incrementally to individual `Activity` components in `AndroidManifest.xml`.
+*   **JNI Stability**: The JNI bridge (`winandroid.c`) and the public interface of `ForkFront` will remain unchanged to prevent breaking the core game engine.
+*   **Verification Loop**: Every step will be followed by a full APK build and a sanity check (launch + smoke test) on the connected device.
+
+## 5. Verification & Testing
+...
