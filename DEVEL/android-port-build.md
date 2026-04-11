@@ -1,75 +1,68 @@
 # Building the NetHack Android Port
 
-This document outlines the requirements and steps to build the Android port of NetHack 3.6.7.
+This document outlines the requirements and steps to build the modernized Android port of NetHack 3.6.7.
 
 ## 1. Prerequisites
 
 ### Software Dependencies
 *   **Operating System**: Linux (instructions verified on 64-bit Ubuntu).
-*   **JDK 8**: Required by the Android SDK manager (e.g., [Temurin](https://adoptium.net/temurin/releases?version=8&os=any&arch=any)).
-*   **Android SDK Command-line Tools**: Download and extract from the [Android Studio page](https://developer.android.com/studio/index.html#command-tools).
+*   **JDK 17**: Required by the modernized Gradle build system.
+*   **Android SDK**: Command-line tools and platforms.
 *   **Android NDK**: Version `21.4.7075529`.
 *   **Native Build Tools**: `gcc`, `make`, `bison`, `flex`, and `gcc-multilib`.
 
 ### Environment Variables
-*   `ANDROID_SDK_ROOT`: Should point to your Android SDK installation directory.
-*   `JAVA_HOME`: Should point to your JDK 8 installation.
+*   `ANDROID_HOME` or `ANDROID_SDK_ROOT`: Should point to your Android SDK installation.
+*   `ANDROID_NDK_ROOT`: (Optional) Points to your NDK if not in the default SDK location.
 
 ## 2. Preparation Steps
 
 ### Install Android Build Tools
-1.  Navigate to `/path/to/android-sdk/tools/bin`.
-2.  Update the SDK manager: `./sdkmanager --update`.
-    *   *Note: If you get "NoClassDefFoundError", ensure `JAVA_HOME` points to JDK 8.*
-3.  Install the required platform and NDK version:
-    ```bash
-    ./sdkmanager --install "platforms;android-30"
-    ./sdkmanager --install "ndk;21.4.7075529"
-    ```
+Ensure the following components are installed via `sdkmanager`:
+*   `platforms;android-34`
+*   `ndk;21.4.7075529`
 
-### Configuring the Native Build
-The NetHack native build system needs to know where the NDK is located.
-1.  Navigate to `sys/android/`.
-2.  Open `Makefile.src`.
-3.  Locate the `NDK` variable and update it to your local NDK path (e.g., `/path/to/android-sdk/ndk/21.4.7075529`).
+### Configuring the NDK Path
+The build system automatically looks for the NDK in standard locations. If your NDK is installed in a non-standard path, set the `ANDROID_NDK_ROOT` environment variable or update the `NDK` variable in `sys/android/Makefile.src`.
 
 ## 3. Build Process
 
-The build is a two-stage process: first building the native NetHack engine and data files, then building the Android application wrapper.
+The build process is now fully automated. The native NetHack engine and data files are automatically compiled and packaged as part of the Gradle build.
 
-### Stage 1: Build the Native Engine and Data
-1.  Initialize the build environment by running the setup script:
-    ```bash
-    cd sys/android
-    sh ./setup.sh
-    ```
-    This script copies the Android-specific Makefiles to the appropriate directories in the root.
-2.  Build and install the native components:
-    ```bash
-    cd ../..
-    make install
-    ```
-    This step compiles `libnethack.so` into `sys/android/app/libs/` and installs the NetHack game data into `sys/android/app/assets/nethackdir`.
-
-### Stage 2: Build the Android Application
-1.  Navigate back to the Android project directory:
+1.  **Navigate to the Android project directory**:
     ```bash
     cd sys/android
     ```
-2.  Use the Gradle wrapper to build the APK:
+
+2.  **Build the APK**:
     ```bash
-    ./gradlew build
+    ./gradlew assembleDebug
     ```
-3.  The resulting APKs will be located in:
+    *This single command will:*
+    *   Initialize the NetHack build environment (`setup.sh`).
+    *   Compile the native engine for all supported ABIs (`arm64-v8a`, `armeabi-v7a`, `x86_64`).
+    *   Compile the game data (dungeons, rumors, etc.).
+    *   Package everything into a debug APK.
+
+3.  **Output Locations**:
+    The resulting APKs are located in:
     *   Debug: `sys/android/app/build/outputs/apk/debug/app-debug.apk`
     *   Release: `sys/android/app/build/outputs/apk/release/app-release-unsigned.apk`
 
-## 4. Deployment
-1.  Locate the APK in `sys/android/app/build/outputs/apk/debug`.
-2.  Copy the APK file to your device.
-3.  Locate the file on your device, install it, and run.
+## 4. Supported Architectures
+The build generates shared libraries for the following ABIs by default:
+*   `arm64-v8a` (Modern 64-bit ARM devices)
+*   `armeabi-v7a` (Older 32-bit ARM devices)
+*   `x86_64` (Modern Android Emulators)
 
-## 5. Troubleshooting
-*   **NDK Path**: If the native build fails with "compiler not found", double-check the `NDK` path in `sys/android/Makefile.src`.
-*   **JDK Version**: If Gradle fails with `NoClassDefFoundError`, ensure you are using JDK 8.
-*   **Missing Assets**: If the app crashes on startup with "missing data files", ensure you ran `make install` from the root directory before running Gradle.
+To modify the target ABIs, edit the `ALL_ABIS` variable in `sys/android/Makefile.src`.
+
+## 5. Deployment
+1.  Locate the APK in `sys/android/app/build/outputs/apk/debug`.
+2.  Copy the APK file to your device or emulator.
+3.  Install and run.
+
+## 6. Troubleshooting
+*   **NDK Errors**: If the build fails with "compiler not found", ensure NDK `21.4.7075529` is installed and the path in `sys/android/Makefile.src` is correct.
+*   **Java Errors**: Ensure `JAVA_HOME` points to JDK 17 or higher.
+*   **Makedefs Conflicts**: If `makedefs` fails to build on the host, check `include/system.h` for conflicting function prototypes (e.g., `sleep`, `srand48`).
