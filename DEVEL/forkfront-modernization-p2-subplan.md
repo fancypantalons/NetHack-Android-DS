@@ -40,7 +40,7 @@ This task is split into specialized sub-plans due to the complexity of custom pr
 4.  **The Settings Migration**:
     *   Migrate `Settings.java` and its custom preferences to AndroidX. (COMPLETED)
 5.  **The Main Activity Migration**:
-    *   Update `ForkFront.java` to `AppCompatActivity`. (IN PROGRESS)
+    *   Update `ForkFront.java` to `AppCompatActivity`. (COMPLETED)
 6.  **Window Refactoring**:
     *   Gradually move `NHW_Menu`, `NHW_Text`, and `NH_Dialog` to use `DialogFragment`.
 
