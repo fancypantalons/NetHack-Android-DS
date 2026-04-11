@@ -261,30 +261,19 @@ rootcheck:
 
 install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 	true; $(PREINSTALL)
-# set up the directories
-# not all mkdirs have -p; those that don't will create a -p directory
-#	-if test -n '$(SHELLDIR)'; then \
-#		mkdir -p $(SHELLDIR); fi
 	-rm -rf $(INSTDIR) $(VARDIR)
 	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/save
 	if test -d ./-p; then rmdir ./-p; fi
-#	-$(CHOWN) $(GAMEUID) $(INSTDIR) $(VARDIR) $(VARDIR)/save
-#	$(CHGRP) $(GAMEGRP) $(INSTDIR) $(VARDIR) $(VARDIR)/save
-# order counts here:
-#	chmod $(DIRPERM) $(INSTDIR)
-#	chmod $(VARDIRPERM) $(VARDIR) $(VARDIR)/save
-# set up the game files
-	( $(MAKE) dofiles )
+	( $(MAKE) dofiles INSTDIR=$(INSTDIR) )
 	( cd $(INSTDIR) ; cp ../../../defaults.nh ./ )
-# set up some additional files
-#	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/xlogfile
-#	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile xlogfile ; \
-#			$(CHGRP) $(GAMEGRP) perm record logfile xlogfile ; \
-#			chmod $(VARFILEPERM) perm record logfile xlogfile )
 	true; $(POSTINSTALL)
 
 android-all:
-	$(MAKE) install SYSTEM=Sysandroid
+	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/save
+	$(MAKE) recover $(VARDAT) dungeon spec_levs
+	$(MAKE) $(GAME) SYSTEM=Sysandroid
+	( $(MAKE) dofiles INSTDIR=$(INSTDIR) )
+	( cd $(INSTDIR) ; cp ../../../defaults.nh ./ )
 # and a reminder
 #	@echo You may also want to reinstall the man pages via the doc Makefile.
 

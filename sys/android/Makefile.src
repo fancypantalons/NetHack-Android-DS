@@ -116,7 +116,15 @@ LINK := $(CC)
 # Compile normally
 CFLAGS = -DANDROID -O2 -g -Wno-format -fsigned-char -fPIC -I../include
 #CFLAGS = -DANDROID -DDEBUG -g -Wno-format -fsigned-char -fPIC -I../include
-LFLAGS = -shared -Wl,--fix-cortex-a8
+
+LFLAGS_armeabi     = -shared -Wl,--fix-cortex-a8
+LFLAGS_armeabi-v7a = -shared -Wl,--fix-cortex-a8
+LFLAGS_arm64-v8a   = -shared -Wl,-z,max-page-size=16384
+LFLAGS_x86         = -shared
+LFLAGS_x86_64      = -shared -Wl,-z,max-page-size=16384
+
+LFLAGS_VAR = LFLAGS_$(ABI)
+LFLAGS := $($(LFLAGS_VAR))
 
 # LFLAGS = -L/usr/X11R6/lib
 #   OR compile backwards compatible a.out format
@@ -412,7 +420,7 @@ Sysandroid:
 	done
 	@touch Sysandroid
 
-Sysandroid_internal: $(HOBJ) Makefile
+Sysandroid_internal: $(HOBJ)
 	@echo "Loading for $(ABI)..."
 	mkdir -p ../sys/android/app/libs/$(ABI)
 	$(LINK) $(LFLAGS) -o ../sys/android/app/libs/$(ABI)/lib$(GAME).so $(HOBJ) $(LIBS)

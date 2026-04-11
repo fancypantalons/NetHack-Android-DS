@@ -23,6 +23,12 @@ android {
     disable 'MissingClass'
   }
 
+  packagingOptions {
+    jniLibs {
+      useLegacyPackaging = false
+    }
+  }
+
   sourceSets {
     main {
       manifest.srcFile 'AndroidManifest.xml'
@@ -42,6 +48,32 @@ task buildNative(type: Exec) {
 }
 
 preBuild.dependsOn buildNative
+
+task alignApk {
+    doLast {
+        def buildToolsPath = "/home/brettk/Android/Sdk/build-tools/35.0.0"
+        def debugApk = file("build/outputs/apk/debug/app-debug.apk")
+        if (debugApk.exists()) {
+            println "Aligning ${debugApk} to 16KB..."
+            def tempApk = file("build/outputs/apk/debug/app-debug-aligned.apk")
+            exec {
+                commandLine "${buildToolsPath}/zipalign", "-f", "-P", "16", "4", debugApk, tempApk
+            }
+            exec {
+                commandLine "${buildToolsPath}/apksigner", "sign", "--ks", "/home/brettk/.android/debug.keystore", "--ks-pass", "pass:android", tempApk
+            }
+            debugApk.delete()
+            tempApk.renameTo(debugApk)
+        }
+    }
+}
+
+// Hook it after the APK is created but before installation
+tasks.whenTaskAdded { task ->
+    if (task.name == 'packageDebug') {
+        task.finalizedBy alignApk
+    }
+}
 
 dependencies {
   implementation 'com.tbd.forkfront:lib:1.1'
