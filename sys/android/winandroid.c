@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <jni.h>
 #include <ctype.h>
+#include <android/log.h>
 
 #include "hack.h"
 #include "func_tab.h"   /* for extended commands */
@@ -357,6 +358,8 @@ void debuglog(const char *fmt, ...)
 	{
 		strcpy(buf, "(null)");
 	}
+
+	__android_log_print(ANDROID_LOG_INFO, "NetHackNative", "%s", buf);
 
 	jbyteArray jstr = create_bytearray(buf);
 	JNICallV(jDebugLog, jstr);

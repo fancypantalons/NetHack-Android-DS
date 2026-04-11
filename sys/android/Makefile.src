@@ -93,7 +93,7 @@ NDK = $(if $(ANDROID_NDK_ROOT),$(ANDROID_NDK_ROOT),/home/brettk/Android/Sdk/ndk/
 NDK_TOOLCHAIN = $(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin
 
 # Choose ABIs to build
-ALL_ABIS = arm64-v8a armeabi-v7a x86_64
+ALL_ABIS = arm64-v8a
 ABI = arm64-v8a
 
 CC_armeabi     = $(NDK_TOOLCHAIN)/armv7a-linux-androideabi30-clang
@@ -292,7 +292,7 @@ WINLIB = $(WINTTYLIB)
 # IRIX 4.0.x needs -lsun if NIS (YP) is being used for passwd file lookup
 # LIBS = -lsun
 #
-LIBS =
+LIBS = -llog
 
 # make NetHack
 GAME     = nethack
@@ -412,10 +412,9 @@ Sysunix:	$(HOBJ) Makefile
 	$(LINK) $(LFLAGS) -o $(GAME) $(HOBJ) $(WINLIB) $(LIBS)
 	@touch Sysunix
 
-Sysandroid:
+Sysandroid: $(HOBJ)
 	@for abi in $(ALL_ABIS); do \
 		echo "Building for ABI: $$abi"; \
-		$(MAKE) clean; \
 		$(MAKE) Sysandroid_internal ABI=$$abi; \
 	done
 	@touch Sysandroid
