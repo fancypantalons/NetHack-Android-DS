@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.tbd.NetHack"
 	android:installLocation="auto">
 	<uses-sdk />
 	<uses-permission
@@ -17,6 +16,7 @@
 		<activity
 			android:name="com.tbd.forkfront.ForkFront"
 			android:label="NetHack"
+			android:exported="true"
 			android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
 			android:launchMode="singleTask"
 			android:configChanges="mcc|mnc|locale|keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|fontScale">
@@ -30,7 +30,8 @@
 		</activity>
 		<activity
 			android:name="com.tbd.forkfront.Settings"
-			android:label="NetHack Settings">
+			android:label="NetHack Settings"
+			android:exported="true">
 		</activity>
 	</application>
 </manifest>
