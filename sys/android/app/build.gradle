@@ -36,6 +36,13 @@ android {
   }
 }
 
+task buildNative(type: Exec) {
+    workingDir '..'
+    commandLine 'sh', '-c', 'sh ./setup.sh && cd ../.. && make install'
+}
+
+preBuild.dependsOn buildNative
+
 dependencies {
   implementation 'com.tbd.forkfront:lib:1.1'
   testImplementation 'junit:junit:4.13.2'
