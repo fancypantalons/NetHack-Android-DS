@@ -254,9 +254,9 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	jYNFunction = (*jEnv)->GetMethodID(jEnv, jApp, "ynFunction", "([B[BI)V");
 	jGetLine = (*jEnv)->GetMethodID(jEnv, jApp, "getLine", "([BIII)Ljava/lang/String;");
 	jStartMenu = (*jEnv)->GetMethodID(jEnv, jApp, "startMenu", "(I)V");
-	jAddMenu = (*jEnv)->GetMethodID(jEnv, jApp, "addMenu", "(IIIIII[BII)V");
+	jAddMenu = (*jEnv)->GetMethodID(jEnv, jApp, "addMenu", "(IIJIII[BII)V");
 	jEndMenu = (*jEnv)->GetMethodID(jEnv, jApp, "endMenu", "(I[B)V");
-	jSelectMenu = (*jEnv)->GetMethodID(jEnv, jApp, "selectMenu", "(III)[I");
+	jSelectMenu = (*jEnv)->GetMethodID(jEnv, jApp, "selectMenu", "(III)[J");
 	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIII)V");
 	jDelayOutput = (*jEnv)->GetMethodID(jEnv, jApp, "delayOutput", "()V");
 	jShowDPad = (*jEnv)->GetMethodID(jEnv, jApp, "askDirection", "()V");
@@ -1205,7 +1205,7 @@ void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, 
 		attr = 1<<attr;
 
 	jbyteArray jstr = create_bytearray(str);
-	JNICallV(jAddMenu, wid, tile, ident->a_int, (int)accelerator, (int)groupacc, attr, jstr, (int)preselected, color);
+	JNICallV(jAddMenu, wid, tile, (jlong)ident->a_void, (int)accelerator, (int)groupacc, attr, jstr, (int)preselected, color);
 	destroy_jobject(jstr);
 }
 
@@ -1255,13 +1255,13 @@ void and_end_menu(winid wid, const char *prompt)
 int and_select_menu_r(winid wid, int how, MENU_ITEM_P **selected, int reentry)
 {
 	int i, n;
-	jintArray a;
-	jint* p;
-	jint* q;
+	jlongArray a;
+	jlong* p;
+	jlong* q;
 
 	//debuglog("and_select_menu");
 
-	a = (jintArray)JNICallO(jSelectMenu, wid, how, reentry);
+	a = (jlongArray)JNICallO(jSelectMenu, wid, how, reentry);
 
 	*selected = 0;
 
@@ -1275,14 +1275,14 @@ int and_select_menu_r(winid wid, int how, MENU_ITEM_P **selected, int reentry)
 	{
 		n >>= 1;
 
-		q = p = (*jEnv)->GetIntArrayElements(jEnv, a, 0);
-		*selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * n);
+		q = p = (*jEnv)->GetLongArrayElements(jEnv, a, 0);
+		*selected = (MENU_ITEM_P*)malloc(sizeof(menu_item) * n);
 		for(i = 0; i < n; i++)
 		{
-			(*selected)[i].item.a_int = *p++;
-			(*selected)[i].count = *p++;
+			(*selected)[i].item.a_void = (genericptr_t)*p++;
+			(*selected)[i].count = (long)*p++;
 		}
-		(*jEnv)->ReleaseIntArrayElements(jEnv, a, q, 0);
+		(*jEnv)->ReleaseLongArrayElements(jEnv, a, q, 0);
 	}
 	else if(n == 1)
 	{
