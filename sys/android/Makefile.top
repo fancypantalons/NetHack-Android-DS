@@ -282,6 +282,9 @@ install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 #			$(CHGRP) $(GAMEGRP) perm record logfile xlogfile ; \
 #			chmod $(VARFILEPERM) perm record logfile xlogfile )
 	true; $(POSTINSTALL)
+
+android-all:
+	$(MAKE) install SYSTEM=Sysandroid
 # and a reminder
 #	@echo You may also want to reinstall the man pages via the doc Makefile.
 

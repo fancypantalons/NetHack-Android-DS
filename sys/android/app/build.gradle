@@ -38,7 +38,7 @@ android {
 
 task buildNative(type: Exec) {
     workingDir '..'
-    commandLine 'sh', '-c', 'sh ./setup.sh && cd ../.. && make install'
+    commandLine 'sh', '-c', 'sh ./setup.sh && cd ../.. && make android-all'
 }
 
 preBuild.dependsOn buildNative
