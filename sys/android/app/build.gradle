@@ -5,6 +5,7 @@ plugins {
 android {
   namespace 'com.tbd.NetHack'
   compileSdk 34
+  buildToolsVersion "35.0.0"
 
   defaultConfig {
     minSdk 21
@@ -15,8 +16,8 @@ android {
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_11
-    targetCompatibility JavaVersion.VERSION_11
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   lint {
@@ -47,20 +48,35 @@ task buildNative(type: Exec) {
     commandLine 'sh', '-c', 'sh ./setup.sh && cd ../.. && make android-all'
 }
 
+task cleanNative(type: Exec) {
+    workingDir file('../../..')
+    commandLine 'sh', '-c', 'make clean'
+    ignoreExitValue true  // Don't fail if there's nothing to clean
+}
+
 preBuild.dependsOn buildNative
+clean.dependsOn cleanNative
 
 task alignApk {
     doLast {
-        def buildToolsPath = "/home/brettk/Android/Sdk/build-tools/35.0.0"
+        // Dynamically resolve build tools path from Android SDK
+        def buildTools = android.sdkDirectory.toPath()
+            .resolve("build-tools")
+            .resolve(android.buildToolsVersion.toString())
+        def zipalign = buildTools.resolve("zipalign").toString()
+        def apksigner = buildTools.resolve("apksigner").toString()
+
         def debugApk = file("build/outputs/apk/debug/app-debug.apk")
         if (debugApk.exists()) {
-            println "Aligning ${debugApk} to 16KB..."
+            println "Aligning ${debugApk} to 16KB pages and 4-byte general alignment..."
             def tempApk = file("build/outputs/apk/debug/app-debug-aligned.apk")
+            // -P 16 = 16KB page alignment for .so files (requires build tools 35.0.0+)
+            // 4 = 4-byte general alignment
             exec {
-                commandLine "${buildToolsPath}/zipalign", "-f", "-P", "16", "4", debugApk, tempApk
+                commandLine zipalign, "-f", "-P", "16", "4", debugApk, tempApk
             }
             exec {
-                commandLine "${buildToolsPath}/apksigner", "sign", "--ks", "/home/brettk/.android/debug.keystore", "--ks-pass", "pass:android", tempApk
+                commandLine apksigner, "sign", "--ks", "/home/brettk/.android/debug.keystore", "--ks-pass", "pass:android", tempApk
             }
             debugApk.delete()
             tempApk.renameTo(debugApk)
