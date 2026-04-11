@@ -14,6 +14,7 @@ Replace deprecated Android UI patterns with modern Jetpack components, enabling 
 
 ### 2.2 Settings & Preferences Modernization
 This task is split into specialized sub-plans due to the complexity of custom preference components:
+*   [Common Groundwork](forkfront-modernization-p2-groundwork.md): Establish modern themes, attributes, and centralized resources.
 *   [Refactoring Settings Architecture](forkfront-modernization-p2-settings-arch.md): Migrate from `PreferenceActivity` to `AppCompatActivity` + `PreferenceFragmentCompat`.
 *   [Refactoring TilesetPreference](forkfront-modernization-p2-tileset-pref.md): Migrate the custom tileset picker to AndroidX.
 *   [Refactoring SliderPreference](forkfront-modernization-p2-slider-pref.md): Migrate the custom slider dialog to AndroidX.
@@ -34,11 +35,13 @@ This task is split into specialized sub-plans due to the complexity of custom pr
     *   Add `androidx.appcompat`, `androidx.preference`, and `androidx.fragment` dependencies to `forkfront/lib/build.gradle`. (COMPLETED)
 2.  **Infrastructure**:
     *   Apply `fill_parent` -> `match_parent` and `dip` -> `dp` global replacements. (COMPLETED)
-3.  **The Settings Migration**:
-    *   Migrate `Settings.java` and its custom preferences to AndroidX. This is the current active task.
-4.  **The Main Activity Migration**:
+3.  **Common Groundwork**:
+    *   Establish themes, colors, attributes, and standard dimensions. (**ACTIVE**)
+4.  **The Settings Migration**:
+    *   Migrate `Settings.java` and its custom preferences to AndroidX.
+5.  **The Main Activity Migration**:
     *   Update `ForkFront.java` to `AppCompatActivity`. (IN PROGRESS)
-5.  **Window Refactoring**:
+6.  **Window Refactoring**:
     *   Gradually move `NHW_Menu`, `NHW_Text`, and `NH_Dialog` to use `DialogFragment`.
 
 ## 4. Verification & Testing
