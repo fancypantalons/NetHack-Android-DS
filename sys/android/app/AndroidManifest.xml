@@ -11,8 +11,7 @@
 		android:label="NetHack"
 		android:icon="@drawable/icon"
 		android:largeHeap="true"
-		android:theme="@android:style/Theme"
-		android:allowBackup="true"
+		android:theme="@style/Theme.ForkFront"		android:allowBackup="true"
 		android:extractNativeLibs="false">
 		<activity
 			android:name="com.tbd.forkfront.ForkFront"

@@ -36,7 +36,7 @@ This task is split into specialized sub-plans due to the complexity of custom pr
 2.  **Infrastructure**:
     *   Apply `fill_parent` -> `match_parent` and `dip` -> `dp` global replacements. (COMPLETED)
 3.  **Common Groundwork**:
-    *   Establish themes, colors, attributes, and standard dimensions. (**ACTIVE**)
+    *   Establish themes, colors, attributes, and standard dimensions. (COMPLETED)
 4.  **The Settings Migration**:
     *   Migrate `Settings.java` and its custom preferences to AndroidX.
 5.  **The Main Activity Migration**:
