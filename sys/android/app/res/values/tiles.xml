@@ -2,12 +2,13 @@
 <resources>
     <string-array name="tileNames">
         <item>Absurd</item>
-    	<item>Ascii (no tiles)</item>
+        <item>Ascii (no tiles)</item>
         <item>Chozo</item>
         <item>DawnHack</item>
         <item>Default</item>
         <item>Geoduck</item>
         <item>Nevanda</item>
+        <item>Custom (use your own image)</item>
     </string-array>
     <string-array name="tileValues">
         <item>absurd_32</item>
@@ -17,6 +18,7 @@
         <item>default_32</item>
         <item>geoduck_24x40</item>
         <item>nevanda_32</item>
+        <item>CUSTOM</item>
     </string-array>
 
 </resources>
