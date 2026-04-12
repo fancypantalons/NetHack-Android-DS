@@ -957,41 +957,41 @@ This document compares the current ForkFront implementation (see `forkfront-asbu
 **Goal:** Modern visual foundation with animation/performance frameworks for all subsequent work
 
 **Work Items:**
-1. Material 3 migration (3-5 days) ✅
+1. Material 3 migration (3-5 days) ✅ (**DONE**)
    - Update dependencies to Material 3
    - Migrate theme in `styles.xml`
    - Define Material 3 color scheme
    - Apply shape theming
    - Test all screens for visual breaks
-2. Edge-to-edge completion (4-6 hours) ✅
+2. Edge-to-edge completion (4-6 hours) ✅ (**DONE**)
    - Add system bar configuration (transparent, behavior)
    - Display cutout mode
    - Full inset handling
    - Test on notched devices
-3. Status display field-based migration (2-3 days) ⚠️ **CRITICAL**
+3. Status display field-based migration (2-3 days) ⚠️ **CRITICAL** (**DONE**)
    - Remove `mOldMode` and string-based parsing
    - Implement proper BL_* field handling
    - Handle BL_CONDITION as bitmask
    - Implement BL_FLUSH
    - Test all status field types
-4. Accessibility basics (2-3 days) ✅
+~~4. Accessibility basics (2-3 days) ✅
    - Content descriptions on UI controls
    - Consistent `sp` usage for text
    - Accessibility announcements for critical events
    - Verify 48dp minimum touch targets
-   - Basic TalkBack testing
+   - Basic TalkBack testing~~
 5. Deprecated attribute fixes (15 minutes) ✅
    - Replace `android:singleLine` with `maxLines`
-6. **Animation framework setup** (1-2 days) 🆕
+6. **Animation framework setup** (1-2 days) ✅ (**DONE**)
    - Basic Material motion utilities
    - Transition framework (shared element transitions)
    - Animation helpers for UI elements
    - Configure animation durations/interpolators
-7. **Performance measurement framework** (1 day) 🆕
+~~7. **Performance measurement framework** (1 day) 🆕
    - Set up profiling harness
    - Frame rate monitoring utilities
    - Performance test infrastructure
-   - Establish baseline metrics
+   - Establish baseline metrics~~
 8. **Settings Material 3 migration** (1-2 days) 🆕
    - Migrate PreferenceScreen theme to Material 3
    - Update custom preferences (TilesetPreference, SliderPreference, etc.)
