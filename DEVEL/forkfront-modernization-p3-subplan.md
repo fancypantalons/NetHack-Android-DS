@@ -231,7 +231,7 @@ Transform the `NHW_Map` rendering architecture from a legacy View-based synchron
 
 ## 4. Implementation Sequence
 
-### Phase 3.1: SurfaceView Migration (Foundation)
+### Phase 3.1: SurfaceView Migration (Foundation) (**DONE**)
 1.  **Create feature branch**: `phase3-surfaceview`
 2.  **Refactor UI class to extend SurfaceView**:
     *   Implement `SurfaceHolder.Callback`
@@ -241,14 +241,14 @@ Transform the `NHW_Map` rendering architecture from a legacy View-based synchron
 4.  **Test basic rendering**: Verify map draws correctly, touch/zoom still works
 5.  **Performance validation**: Measure frame rates, ensure no regressions
 
-### Phase 3.2: WindowInsets Integration
+### Phase 3.2: WindowInsets Integration (**DONE**)
 1.  **Update ForkFront Activity**: Enable edge-to-edge mode
 2.  **Add insets listener to NHW_Map**: Capture system bars and cutout insets
 3.  **Adjust rendering bounds**: Modify drawing to respect safe areas
 4.  **Update status bar positioning**: Ensure proper spacing with top insets
 5.  **Test across device types**: Notched phones, gesture nav, foldables
 
-### Phase 3.3: Adaptive Tile Scaling
+### Phase 3.3: Adaptive Tile Scaling (**DONE**)
 1.  **Implement density-adaptive min/max**: Use screen density and size class
 2.  **Add configuration change handling**: Respond to folds/unfolds, rotations
 3.  **Add bilinear filtering option**: Improve scaling quality on modern displays

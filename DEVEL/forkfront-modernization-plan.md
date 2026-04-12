@@ -14,29 +14,30 @@ Transform the legacy "ForkFront" library (circa 2011) into a modern, performant,
 
 ## 3. Master Phasing Strategy
 
-### Phase 1: Foundation (Infrastructure)
+### Phase 1: Foundation (**DONE**)
 *   Raise `minSdkVersion` to **21** (Android 5.0) or **24** (Android 7.0).
 *   Raise `compileSdk` and `targetSdk` to **34** (Android 14).
 *   Migrate to **Java 17** compatibility.
 *   Remove `cz.msebera.android:httpclient` dependency.
 *   Global string replacement of `fill_parent` -> `match_parent`.
 
-### Phase 2: UI Architecture Migration (**ACTIVE**)
+### Phase 2: UI Architecture Migration (**DONE**)
 *   Migrate to **AndroidX** and `AppCompatActivity`.
 *   Replace `PreferenceActivity` with `PreferenceFragmentCompat`.
 *   Modernize custom preferences (`TilesetPreference`, `SliderPreference`).
 *   Introduce `Fragment`-based window management in `NH_State`.
 *   *Detailed sub-plan in development.*
 
-### Phase 3: Rendering & Graphics Evolution
+### Phase 3: Rendering & Graphics Evolution (**DONE**)
 *   Migrate `NHW_Map` from `View` to `SurfaceView` or `TextureView` for threaded rendering.
 *   Implement `WindowInsets` for edge-to-edge support (notches/navigation bars).
 *   Refactor tile scaling for modern high-DPI (xxxhdpi) and foldable displays.
 
-### Phase 4: Lifecycle & State Management
+### Phase 4: Lifecycle & State Management (**DONE**)
 *   Integrate `ViewModel` to manage `NetHackIO` and engine thread longevity.
 *   Replace `AsyncTask` in `UpdateAssets.java` with `java.util.concurrent` or Coroutines.
 *   Decouple JNI callbacks from specific Activity instances to survive configuration changes.
+*   *Detailed sub-plan: [forkfront-modernization-p4-subplan.md](forkfront-modernization-p4-subplan.md)*
 
 ### Phase 5: Input & Accessibility
 *   Modernize `SoftKeyboard.java` to integrate better with Android IMF.
