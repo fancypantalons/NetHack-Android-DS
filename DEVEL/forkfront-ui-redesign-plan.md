@@ -992,7 +992,7 @@ This document compares the current ForkFront implementation (see `forkfront-asbu
    - Frame rate monitoring utilities
    - Performance test infrastructure
    - Establish baseline metrics~~
-8. **Settings Material 3 migration** (1-2 days) 🆕
+8. **Settings Material 3 migration** (1-2 days) ✅ (**DONE**)
    - Migrate PreferenceScreen theme to Material 3
    - Update custom preferences (TilesetPreference, SliderPreference, etc.)
    - Foundation ready for Phase 2 control customization
