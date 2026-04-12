@@ -59,8 +59,10 @@ static void NDECL(and_end_screen);
 static char* FDECL(and_getmsghistory, (BOOLEAN_P));
 static void FDECL(and_putmsghistory, (const char *, BOOLEAN_P));
 static void save_msg(const char* msg);
+static void FDECL(and_status_init, (void));
+static void FDECL(and_status_finish, (void));
+static void FDECL(and_status_enablefield, (int, const char *, const char *, boolean));
 static void FDECL(and_status_update, (int, genericptr_t, int, int, int, unsigned long *));
-static void and_status_flush();
 
 int NetHackMain(int argc, char** argv);
 
@@ -122,9 +124,9 @@ struct window_procs and_procs = {
 	genl_preference_update,
 	and_getmsghistory,
 	and_putmsghistory,
-	genl_status_init,
-	genl_status_finish,
-	genl_status_enablefield,
+	and_status_init,
+	and_status_finish,
+	and_status_enablefield,
 	and_status_update,
 	genl_can_suspend_no
 };
@@ -166,6 +168,10 @@ static jmethodID jAskName;
 static jmethodID jLoadSound;
 static jmethodID jPlaySound;
 static jmethodID jGetDumplogDir;
+static jmethodID jStatusInit;
+static jmethodID jStatusEnableField;
+static jmethodID jStatusUpdate;
+static jmethodID jStatusFinish;
 
 static boolean quit_if_possible;
 static boolean restoring_msghistory;
@@ -267,6 +273,10 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	jLoadSound = (*jEnv)->GetMethodID(jEnv, jApp, "loadSound", "([B)V");
 	jPlaySound = (*jEnv)->GetMethodID(jEnv, jApp, "playSound", "([BI)V");
 	jGetDumplogDir = (*jEnv)->GetMethodID(jEnv, jApp, "getDumplogDir", "()Ljava/lang/String;");
+	jStatusInit = (*jEnv)->GetMethodID(jEnv, jApp, "statusInit", "()V");
+	jStatusEnableField = (*jEnv)->GetMethodID(jEnv, jApp, "statusEnableField", "(ILjava/lang/String;Ljava/lang/String;Z)V");
+	jStatusUpdate = (*jEnv)->GetMethodID(jEnv, jApp, "statusUpdate", "(ILjava/lang/String;JIII[J)V");
+	jStatusFinish = (*jEnv)->GetMethodID(jEnv, jApp, "statusFinish", "()V");
 
 	if(!(jReceiveKey && jReceivePosKey && jCreateWindow && jClearWindow && jDisplayWindow &&
 			jDestroyWindow && jPutString && jRawPrint && jSetCursorPos && jPrintTile &&
@@ -941,37 +951,85 @@ int hl_attrmask_to_attrmask(int mask)
 	return attr;
 }
 
+void and_status_init(void)
+{
+	(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusInit);
+}
+
+void and_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
+{
+	// Update the C-side activefields array
+	status_activefields[fieldidx] = enable;
+
+	// Call Java
+	jstring jName = (*jEnv)->NewStringUTF(jEnv, nm);
+	jstring jFmt = (*jEnv)->NewStringUTF(jEnv, fmt ? fmt : "");
+	(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusEnableField, fieldidx, jName, jFmt, (jboolean)enable);
+	(*jEnv)->DeleteLocalRef(jEnv, jName);
+	(*jEnv)->DeleteLocalRef(jEnv, jFmt);
+}
+
+void and_status_finish(void)
+{
+	(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusFinish);
+}
+
 void and_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks)
 {
-	long cond, *condptr = (long *) ptr;
-	char *nb, *text = (char *) ptr;
-	int i;
+	long conditionMask = 0;
+	char *text = (char *) ptr;
+	jstring jValue = NULL;
+	jlongArray jColorMasks = NULL;
 
-	if(idx == BL_FLUSH)
+	// Handle BL_FLUSH and BL_RESET (special indices)
+	if(idx == BL_FLUSH || idx == BL_RESET)
 	{
-		if(cond_hilites)
-			and_status_flush();
+		(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusUpdate,
+			idx, NULL, 0L, chg, percent, color, NULL);
+		return;
 	}
-	else if(status_activefields[idx])
+
+	// Handle BL_CONDITION (bitmask, not string)
+	if(idx == BL_CONDITION)
 	{
-		if(idx == BL_CONDITION)
-		{
-			cond_hilites = colormasks;
-			active_conditions = condptr ? *condptr : 0L;
-			*status_vals[idx] = 0;
+		long *condptr = (long *) ptr;
+		conditionMask = condptr ? *condptr : 0L;
+
+		// Convert colormasks array to Java long array
+		if(colormasks) {
+			jColorMasks = (*jEnv)->NewLongArray(jEnv, BL_ATTCLR_MAX);
+			if(jColorMasks) {
+				jlong temp[BL_ATTCLR_MAX];
+				int i;
+				for(i = 0; i < BL_ATTCLR_MAX; i++) {
+					temp[i] = (jlong)colormasks[i];
+				}
+				(*jEnv)->SetLongArrayRegion(jEnv, jColorMasks, 0, BL_ATTCLR_MAX, temp);
+			}
 		}
-		else if(idx == BL_GOLD && *text == '\\')
+
+		(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusUpdate,
+			idx, NULL, (jlong)conditionMask, chg, percent, color, jColorMasks);
+
+		if(jColorMasks)
+			(*jEnv)->DeleteLocalRef(jEnv, jColorMasks);
+		return;
+	}
+
+	// Regular field update (string value)
+	debuglog("statusUpdate: idx=%d text=%s active=%d", idx, text ? text : "NULL", status_activefields[idx]);
+	if(text && status_activefields[idx])
+	{
+		// Handle BL_GOLD special format (remove glyph encoding if present)
+		if(idx == BL_GOLD && *text == '\\')
 		{
-			// Remove encoded glyph value. (This might break in the future if the format is changed in botl.c)
-			text += 10;
-			Sprintf(status_vals[idx], "$%s", text);
-			status_colors[idx] = color;
+			text += 10; // Skip encoded glyph value
 		}
-		else
-		{
-			Sprintf(status_vals[idx], status_fieldfmt[idx] ? status_fieldfmt[idx] : "%s", text ? text : "");
-			status_colors[idx] = color;
-		}
+
+		jValue = (*jEnv)->NewStringUTF(jEnv, text);
+		(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusUpdate,
+			idx, jValue, 0L, chg, percent, color, NULL);
+		(*jEnv)->DeleteLocalRef(jEnv, jValue);
 	}
 }
 
