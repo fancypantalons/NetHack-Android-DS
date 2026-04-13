@@ -256,14 +256,16 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	jRedrawStatus = (*jEnv)->GetMethodID(jEnv, jApp, "redrawStatus", "()V");
 	jRawPrint = (*jEnv)->GetMethodID(jEnv, jApp, "rawPrint", "(I[B)V");
 	jSetCursorPos = (*jEnv)->GetMethodID(jEnv, jApp, "setCursorPos", "(III)V");
-	jPrintTile = (*jEnv)->GetMethodID(jEnv, jApp, "printTile", "(IIIIIII)V");
+	jPrintTile = (*jEnv)->GetMethodID(jEnv, jApp, "printTile", "(IIIIIIII)V");
+
 	jYNFunction = (*jEnv)->GetMethodID(jEnv, jApp, "ynFunction", "([B[BI)V");
 	jGetLine = (*jEnv)->GetMethodID(jEnv, jApp, "getLine", "([BIII)Ljava/lang/String;");
 	jStartMenu = (*jEnv)->GetMethodID(jEnv, jApp, "startMenu", "(I)V");
 	jAddMenu = (*jEnv)->GetMethodID(jEnv, jApp, "addMenu", "(IIJIII[BII)V");
 	jEndMenu = (*jEnv)->GetMethodID(jEnv, jApp, "endMenu", "(I[B)V");
 	jSelectMenu = (*jEnv)->GetMethodID(jEnv, jApp, "selectMenu", "(III)[J");
-	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIII)V");
+	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIIII)V");
+
 	jDelayOutput = (*jEnv)->GetMethodID(jEnv, jApp, "delayOutput", "()V");
 	jShowDPad = (*jEnv)->GetMethodID(jEnv, jApp, "askDirection", "()V");
 	jShowLog = (*jEnv)->GetMethodID(jEnv, jApp, "showLog", "(I)V");
@@ -1421,7 +1423,14 @@ void and_wait_synch()
 void and_cliparound(int x, int y)
 {
 	//debuglog("and_cliparound %dx%d (%dx%d)", x, y, u.ux, u.uy);
-	JNICallV(jCliparound, x, y, u.ux, u.uy);
+	int flags = 0;
+	struct obj* otmp = level.objects[u.ux][u.uy];
+	if (otmp) {
+		flags |= 1; // Has object
+		if (Is_container(otmp) || otmp->otyp == STATUE) flags |= 2;
+		if (is_edible(otmp)) flags |= 4;
+	}
+	JNICallV(jCliparound, x, y, u.ux, u.uy, flags);
 }
 
 #endif
@@ -1454,7 +1463,9 @@ void and_update_positionbar(char *features)
 
 void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
 {
-	//debuglog("and_print_glyph wid=%d %dx%d", wid, x, y);
+	if (glyph >= 1100 || bkglyph >= 1100) {
+		debuglog("and_print_glyph wid=%d %dx%d glyph=%d bkglyph=%d", wid, x, y, glyph, bkglyph);
+	}
 	int tile;
 	if(glyph == NO_GLYPH)
 		tile = -1;
@@ -1473,7 +1484,7 @@ void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
 	if(!iflags.use_inverse)
 		special &= ~MG_DETECT;
 
-	JNICallV(jPrintTile, wid, x, y, tile, ch, nhcolor_to_RGB(col), special);
+	JNICallV(jPrintTile, wid, x, y, tile, bkglyph, ch, nhcolor_to_RGB(col), special);
 }
 
 //____________________________________________________________________________________
