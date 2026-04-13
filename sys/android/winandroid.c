@@ -264,8 +264,7 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	jAddMenu = (*jEnv)->GetMethodID(jEnv, jApp, "addMenu", "(IIJIII[BII)V");
 	jEndMenu = (*jEnv)->GetMethodID(jEnv, jApp, "endMenu", "(I[B)V");
 	jSelectMenu = (*jEnv)->GetMethodID(jEnv, jApp, "selectMenu", "(III)[J");
-	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIIII)V");
-
+	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIIIII)V");
 	jDelayOutput = (*jEnv)->GetMethodID(jEnv, jApp, "delayOutput", "()V");
 	jShowDPad = (*jEnv)->GetMethodID(jEnv, jApp, "askDirection", "()V");
 	jShowLog = (*jEnv)->GetMethodID(jEnv, jApp, "showLog", "(I)V");
@@ -1423,14 +1422,47 @@ void and_wait_synch()
 void and_cliparound(int x, int y)
 {
 	//debuglog("and_cliparound %dx%d (%dx%d)", x, y, u.ux, u.uy);
-	int flags = 0;
+	int objFlags = 0;
 	struct obj* otmp = level.objects[u.ux][u.uy];
 	if (otmp) {
-		flags |= 1; // Has object
-		if (Is_container(otmp) || otmp->otyp == STATUE) flags |= 2;
-		if (is_edible(otmp)) flags |= 4;
+		objFlags |= 1; // Has object
+		if (Is_container(otmp) || otmp->otyp == STATUE) objFlags |= 2;
+		if (is_edible(otmp)) objFlags |= 4;
 	}
-	JNICallV(jCliparound, x, y, u.ux, u.uy, flags);
+
+	// Add map feature flags (mirroring doup/dodown logic)
+	// Up
+	if ((u.ux == xupstair && u.uy == yupstair) ||
+		(xupladder && u.ux == xupladder && u.uy == yupladder) ||
+		(sstairs.sx && u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)) {
+		objFlags |= 8;
+	}
+	// Down
+	if ((u.ux == xdnstair && u.uy == ydnstair) ||
+		(xdnladder && u.ux == xdnladder && u.uy == ydnladder) ||
+		(sstairs.sx && u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)) {
+		objFlags |= 16;
+	}
+
+	struct rm *lev = &levl[u.ux][u.uy];
+	if (IS_ALTAR(lev->typ)) objFlags |= 32;
+	if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ)) objFlags |= 64;
+	if (IS_THRONE(lev->typ)) objFlags |= 128;
+
+	int monMask = 0;
+	for (int dx = -1; dx <= 1; dx++) {
+		for (int dy = -1; dy <= 1; dy++) {
+			if (dx == 0 && dy == 0) continue;
+			int nx = u.ux + dx;
+			int ny = u.uy + dy;
+			if (isok(nx, ny) && level.monsters[nx][ny]) {
+				// Use 1-8 bits for neighbors
+				monMask |= (1 << ((dx + 1) + (dy + 1) * 3));
+			}
+		}
+	}
+
+	JNICallV(jCliparound, x, y, u.ux, u.uy, objFlags, monMask);
 }
 
 #endif
