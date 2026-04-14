@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "widgets": [
+    {
+      "type": "status",
+      "anchor": {
+        "horizontal": "LEFT",
+        "vertical": "TOP",
+        "marginLeft": "0dp",
+        "marginTop": "0dp"
+      },
+      "size": {
+        "width": "MATCH_PARENT",
+        "height": "60dp"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 15
+      }
+    },
+    {
+      "type": "message",
+      "anchor": {
+        "horizontal": "LEFT",
+        "vertical": "TOP",
+        "marginLeft": "0dp",
+        "marginTop": "60dp"
+      },
+      "size": {
+        "width": "MATCH_PARENT",
+        "height": "140dp"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 15,
+        "rows": 4
+      }
+    },
+    {
+      "type": "contextual",
+      "anchor": {
+        "horizontal": "LEFT",
+        "vertical": "BOTTOM",
+        "marginLeft": "0dp",
+        "marginBottom": "0dp"
+      },
+      "size": {
+        "width": "MATCH_PARENT",
+        "height": "50dp"
+      },
+      "properties": {
+        "horizontal": true,
+        "opacity": 191
+      }
+    },
+    {
+      "type": "dpad",
+      "anchor": {
+        "horizontal": "CENTER",
+        "vertical": "BOTTOM",
+        "marginLeft": "0dp",
+        "marginBottom": "70dp"
+      },
+      "size": {
+        "width": "200dp",
+        "height": "200dp"
+      },
+      "properties": {
+        "opacity": 191
+      }
+    }
+  ]
+}

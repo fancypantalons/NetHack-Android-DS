@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "widgets": [
+    {
+      "type": "status",
+      "anchor": {
+        "horizontal": "LEFT",
+        "vertical": "TOP",
+        "marginLeft": "0dp",
+        "marginTop": "0dp"
+      },
+      "size": {
+        "width": "50%",
+        "height": "50dp"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 14
+      }
+    },
+    {
+      "type": "message",
+      "anchor": {
+        "horizontal": "RIGHT",
+        "vertical": "TOP",
+        "marginRight": "0dp",
+        "marginTop": "0dp"
+      },
+      "size": {
+        "width": "50%",
+        "height": "50dp"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 14,
+        "rows": 2
+      }
+    },
+    {
+      "type": "contextual",
+      "anchor": {
+        "horizontal": "LEFT",
+        "vertical": "BOTTOM",
+        "marginLeft": "0dp",
+        "marginBottom": "0dp"
+      },
+      "size": {
+        "width": "70%",
+        "height": "45dp"
+      },
+      "properties": {
+        "horizontal": true,
+        "opacity": 191
+      }
+    },
+    {
+      "type": "dpad",
+      "anchor": {
+        "horizontal": "RIGHT",
+        "vertical": "BOTTOM",
+        "marginRight": "0dp",
+        "marginBottom": "0dp"
+      },
+      "size": {
+        "width": "180dp",
+        "height": "180dp"
+      },
+      "properties": {
+        "opacity": 191
+      }
+    }
+  ]
+}
