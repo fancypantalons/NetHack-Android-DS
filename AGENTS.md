@@ -13,3 +13,9 @@ Rebuilding this full project takes quite a while, particularly the components th
 # Testing on real hardware
 
 When you start up the application on real hardware, it can take a while to start, and then a real person has to interact with the application on your behalf. If you need testing steps to be performed, launch the application, then stop, provide suitable instructions, and wait for indication that those instructions have been followed.
+
+# Other guidance
+
+## Use "git -C"
+
+You may be tempted to perform operations like "cd sys/android/forkfront && git log" or equivalent. **NEVER** do that. Use the "-C" flag to have git do the work: "git -C sys/android/forkfront log".
