@@ -4,9 +4,10 @@
     {
       "type": "status",
       "anchor": {
-        "horizontal": "LEFT",
+        "horizontal": "CENTER",
         "vertical": "TOP",
-        "marginLeft": "0dp",
+        "marginLeft": "15dp",
+        "marginRight": "15dp",
         "marginTop": "0dp"
       },
       "size": {
@@ -21,9 +22,10 @@
     {
       "type": "message",
       "anchor": {
-        "horizontal": "LEFT",
+        "horizontal": "CENTER",
         "vertical": "TOP",
-        "marginLeft": "0dp",
+        "marginLeft": "15dp",
+        "marginRight": "15dp",
         "marginTop": "60dp"
       },
       "size": {
