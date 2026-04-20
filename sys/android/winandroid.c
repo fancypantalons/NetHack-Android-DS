@@ -1264,6 +1264,7 @@ void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, 
 		attr = 1<<attr;
 
 	jbyteArray jstr = create_bytearray(str);
+	__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "add_menu: wid=%d, id=%p, str=%s", wid, ident->a_void, str);
 	JNICallV(jAddMenu, wid, tile, (jlong)ident->a_void, (int)accelerator, (int)groupacc, attr, jstr, (int)preselected, color);
 	destroy_jobject(jstr);
 }
@@ -1325,8 +1326,10 @@ int and_select_menu_r(winid wid, int how, MENU_ITEM_P **selected, int reentry)
 	*selected = 0;
 
 	//debuglog("returned %d", a);
-	if(a == 0)
+	if(a == 0) {
+		__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "and_select_menu_r: wid=%d, how=%d returned NULL (cancel)", wid, how);
 		return -1;
+	}
 
 	n = (*jEnv)->GetArrayLength(jEnv, a);
 
@@ -1334,22 +1337,30 @@ int and_select_menu_r(winid wid, int how, MENU_ITEM_P **selected, int reentry)
 	{
 		n >>= 1;
 
+		__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "and_select_menu_r: wid=%d, how=%d returned %d items", wid, how, n);
+
 		q = p = (*jEnv)->GetLongArrayElements(jEnv, a, 0);
 		*selected = (MENU_ITEM_P*)malloc(sizeof(menu_item) * n);
 		for(i = 0; i < n; i++)
 		{
 			(*selected)[i].item.a_void = (genericptr_t)*p++;
 			(*selected)[i].count = (long)*p++;
+			__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "  [%d] id=%p, count=%ld", i, (*selected)[i].item.a_void, (*selected)[i].count);
 		}
 		(*jEnv)->ReleaseLongArrayElements(jEnv, a, q, 0);
 	}
 	else if(n == 1)
 	{
 		// special case: ABORT
-		if(!program_state.gameover && program_state.something_worth_saving)
+		if(!program_state.gameover && program_state.something_worth_saving) {
+			__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "and_select_menu_r: wid=%d special case ABORT -> 0", wid);
 			n = 0;
+		}
 		else
 			n = and_select_menu_r(wid, how, selected, 1);
+	}
+	else {
+		__android_log_print(ANDROID_LOG_DEBUG, "NetHack", "and_select_menu_r: wid=%d, how=%d returned 0 items", wid, how);
 	}
 
 	destroy_jobject(a);
