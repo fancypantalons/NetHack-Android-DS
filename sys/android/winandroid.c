@@ -8,6 +8,53 @@
 #include "func_tab.h"   /* for extended commands */
 #include "dlb.h"
 
+#define INPUT_BUFFER_SIZE 256
+static char and_input_buffer[INPUT_BUFFER_SIZE];
+static int and_input_buffer_pos = 0;
+
+static int and_input_buffer_is_empty()
+{
+	return and_input_buffer_pos <= 0;
+}
+
+static void and_input_buffer_push(char c)
+{
+	if (and_input_buffer_pos < INPUT_BUFFER_SIZE - 1)
+		and_input_buffer[and_input_buffer_pos++] = c;
+}
+
+static char and_input_buffer_pop()
+{
+	char c = '\0';
+	if (and_input_buffer_pos > 0)
+	{
+		c = and_input_buffer[0];
+		memmove(and_input_buffer, and_input_buffer + 1, --and_input_buffer_pos);
+	}
+	return c;
+}
+
+static char* and_input_buffer_pop_all()
+{
+	static char buf[INPUT_BUFFER_SIZE];
+	memcpy(buf, and_input_buffer, and_input_buffer_pos);
+	buf[and_input_buffer_pos] = '\0';
+	and_input_buffer_pos = 0;
+	return buf;
+}
+
+JNIEXPORT void JNICALL Java_com_tbd_forkfront_NetHackIO_pushInput(JNIEnv* env, jobject thiz, jstring str)
+{
+	const char* pChars = (*env)->GetStringUTFChars(env, str, 0);
+	if (pChars)
+	{
+		int i;
+		for (i = 0; pChars[i]; i++)
+			and_input_buffer_push(pChars[i]);
+		(*env)->ReleaseStringUTFChars(env, str, pChars);
+	}
+}
+
 static void FDECL(and_init_nhwindows, (int *, char **));
 static void NDECL(and_player_selection);
 static void NDECL(and_askname);
@@ -1564,6 +1611,9 @@ void and_raw_print_bold(const char* str)
 int and_nhgetch()
 {
 	//debuglog("and_nhgetch");
+	if (!and_input_buffer_is_empty())
+		return and_input_buffer_pop();
+
 	int c = JNICallI(jReceiveKey);
 
 	quit_if_possible = FALSE;
@@ -1611,6 +1661,9 @@ void lock_mouse_cursor(boolean bLock)
 int and_nh_poskey(int *x, int *y, int *mod)
 {
 	//debuglog("and_nh_poskey");
+	if (!and_input_buffer_is_empty())
+		return and_input_buffer_pop();
+
 	jintArray a = (*jEnv)->NewIntArray(jEnv, 2);
 	int c = JNICallI(jReceivePosKey, bMouseLock, a);
 	if(!c)
@@ -2200,6 +2253,16 @@ int do_ext_cmd_text()
 
 int and_get_ext_cmd()
 {
+	if (!and_input_buffer_is_empty())
+	{
+		int i;
+		char *buffer = and_input_buffer_pop_all();
+		for (i = 0; extcmdlist[i].ef_txt != (char *)0; i++)
+		{
+			if (!strcmpi(extcmdlist[i].ef_txt, buffer))
+				return i;
+		}
+	}
 	if(iflags.extmenu)
 		return do_ext_cmd_menu(FALSE);
 	return do_ext_cmd_text();

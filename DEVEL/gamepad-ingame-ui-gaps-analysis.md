@@ -44,7 +44,7 @@ The core architecture for in-game gamepad support is solid. The central routing 
 *   **UiContext.OTHER:** One-off `NH_Dialog` or `AlertDialog` instances do not yet explicitly push `UiContext.OTHER`. While basic navigation works via Android defaults, explicit context management was recommended for predictability.
 
 ## 4. Recommendations for Next Steps
-1.  **Fix D-pad Collision:** Update `NHW_Menu.java` to ensure D-pad events are consumed (`HANDLED`) rather than ignored, preventing character translation.
+1.  **Fix D-pad Collision:** Update `NHW_Menu.java` to ensure D-pad events are consumed (`HANDLED`) rather than ignored, preventing character translation. (**DONE**)
 2.  **Implement handleGamepadMotion:** Bridge the `GamepadDispatcher` motion events to the UI components to enable stick-based navigation.
 3.  **Complete NH_GetLine History:** Implement the history cycling logic for `L1/R1`.
 4.  **Refine Scroll Logic:** Standardize `NHW_Menu` (Text) and `NHW_Text` to support both single-line D-pad scrolling and page-based jumps (`L1/R1`).
