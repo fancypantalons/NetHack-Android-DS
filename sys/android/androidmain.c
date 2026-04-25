@@ -53,6 +53,52 @@ void nethack_exit(int code)
 	longjmp(env, code);
 }
 
+static void
+write_save_meta()
+{
+    FILE *fp;
+    char metafile[BUFSZ];
+    const char *role_name;
+    const char *race_name;
+    const char *gender;
+    const char *alignment;
+
+    /* lock has the dungeon-level number appended (e.g. "1plname.1") once
+       play has begun; the save file itself is named via SAVEF. Mirror
+       delete_savefile()'s convention so Java can find the sidecar. */
+    Sprintf(metafile, "%s.meta", fqname(SAVEF, SAVEPREFIX, 0));
+    fp = fopen(metafile, "w");
+    if (!fp)
+        return;
+
+    /* Most roles have a NULL name.f and use name.m for both genders. */
+    role_name = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
+    race_name = urace.noun;
+    gender = flags.female ? "female" : "male";
+
+    switch (u.ualign.type) {
+    case A_LAWFUL:
+        alignment = "Lawful";
+        break;
+    case A_NEUTRAL:
+        alignment = "Neutral";
+        break;
+    case A_CHAOTIC:
+        alignment = "Chaotic";
+        break;
+    default:
+        alignment = "Unaligned";
+        break;
+    }
+
+    fprintf(fp, "role=%s\n", role_name ? role_name : "");
+    fprintf(fp, "race=%s\n", race_name ? race_name : "");
+    fprintf(fp, "gender=%s\n", gender);
+    fprintf(fp, "alignment=%s\n", alignment);
+    fprintf(fp, "wizard=%d\n", wizard ? 1 : 0);
+    fclose(fp);
+}
+
 int NetHackMain(int argc, char** argv)
 {
 	debuglog("Starting NetHack!");
@@ -178,6 +224,7 @@ int NetHackMain(int argc, char** argv)
 		if(!dorecover(fd))
 			goto not_recovered;
 		resuming = TRUE;
+		write_save_meta();
 #ifdef WIZARD
 		if(!wizard && remember_wiz_mode)
 			wizard = TRUE;
@@ -202,6 +249,7 @@ int NetHackMain(int argc, char** argv)
 		not_recovered: player_selection();
 		resuming = FALSE;
 		newgame();
+		write_save_meta();
 		wd_message();
 	}
 

@@ -1060,6 +1060,13 @@ int
 delete_savefile()
 {
     (void) unlink(fqname(SAVEF, SAVEPREFIX, 0));
+#ifdef ANDROID
+    {
+        char metapath[BUFSZ];
+        Sprintf(metapath, "%s.meta", fqname(SAVEF, SAVEPREFIX, 0));
+        (void) unlink(metapath);
+    }
+#endif
     return 0; /* for restore_saved_game() (ex-xxxmain.c) test */
 }
 
@@ -1311,6 +1318,7 @@ get_saved_games()
         (void) memset((genericptr_t) result, 0, (n1+n2+1) * sizeof(char *));
     }
     for (i=0; i<n1; i++) {
+        if ( strchr( namelist[i]->d_name, '.' ) ) continue;
         if ( sscanf( namelist[i]->d_name, "%d%63s", &uid, name ) == 2 ) {
             if ( uid == myuid ) {
                 char filename[BUFSZ];
