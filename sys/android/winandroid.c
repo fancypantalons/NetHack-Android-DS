@@ -108,7 +108,7 @@ static void FDECL(and_putmsghistory, (const char *, BOOLEAN_P));
 static void save_msg(const char* msg);
 static void FDECL(and_status_init, (void));
 static void FDECL(and_status_finish, (void));
-static void FDECL(and_status_enablefield, (int, const char *, const char *, boolean));
+static void FDECL(and_status_enablefield, (int, const char *, const char *, BOOLEAN_P));
 static void FDECL(and_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 
 int NetHackMain(int argc, char** argv);
@@ -207,7 +207,7 @@ static jmethodID jEndMenu;
 static jmethodID jSelectMenu;
 static jmethodID jCliparound;
 static jmethodID jDelayOutput;
-static jmethodID jShowDPad;
+static jmethodID jHighlightDPad;
 static jmethodID jShowLog;
 static jmethodID jSetUsername;
 static jmethodID jSetNumPadOption;
@@ -313,7 +313,7 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	jSelectMenu = (*jEnv)->GetMethodID(jEnv, jApp, "selectMenu", "(III)[J");
 	jCliparound = (*jEnv)->GetMethodID(jEnv, jApp, "cliparound", "(IIIIII)V");
 	jDelayOutput = (*jEnv)->GetMethodID(jEnv, jApp, "delayOutput", "()V");
-	jShowDPad = (*jEnv)->GetMethodID(jEnv, jApp, "askDirection", "()V");
+	jHighlightDPad = (*jEnv)->GetMethodID(jEnv, jApp, "highlightDPad", "()V");
 	jShowLog = (*jEnv)->GetMethodID(jEnv, jApp, "showLog", "(I)V");
 	jSetUsername = (*jEnv)->GetMethodID(jEnv, jApp, "setUsername", "([B)V");
 	jSetNumPadOption = (*jEnv)->GetMethodID(jEnv, jApp, "setNumPadOption", "(I)V");
@@ -329,7 +329,7 @@ void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstr
 	if(!(jReceiveKey && jReceivePosKey && jCreateWindow && jClearWindow && jDisplayWindow &&
 			jDestroyWindow && jPutString && jRawPrint && jSetCursorPos && jPrintTile &&
 			jYNFunction && jGetLine && jStartMenu && jAddMenu && jEndMenu && jSelectMenu &&
-			jCliparound && jDelayOutput && jShowDPad && jShowLog && jSetUsername &&
+			jCliparound && jDelayOutput && jHighlightDPad && jShowLog && jSetUsername &&
 			jSetNumPadOption && jAskName && jSetHealthColor && jRedrawStatus &&
 			jLoadSound && jPlaySound && jGetDumplogDir))
 	{
@@ -719,31 +719,6 @@ void and_curs(winid wid, int x, int y)
 static int text_attribs = 0;
 static int text_color = CLR_WHITE;
 
-static int palette[CLR_MAX] = {
-	0xFF555555,	// CLR_BLACK
-	0xFFFF0000,	// CLR_RED
-	0xFF008800,	// CLR_GREEN
-	0xFF664411, // CLR_BROWN
-	0xFF0000FF,	// CLR_BLUE
-	0xFFFF00FF,	// CLR_MAGENTA
-	0xFF00FFFF,	// CLR_CYAN
-	0xFF888888,	// CLR_GRAY
-	0xFFFFFFFF,	// NO_COLOR
-	0xFFFF9900,	// CLR_ORANGE
-	0xFF00FF00,	// CLR_BRIGHT_GREEN
-	0xFFFFFF00,	// CLR_YELLOW
-	0xFF0088FF,	// CLR_BRIGHT_BLUE
-	0xFFFF77FF,	// CLR_BRIGHT_MAGENTA
-	0xFF77FFFF,	// CLR_BRIGHT_CYAN
-	0xFFFFFFFF	// CLR_WHITE
-};
-int nhcolor_to_RGB(int c)
-{
-	if(c >= 0 && c < CLR_MAX)
-		return palette[c];
-	return 0xFF000000;
-}
-
 const char* colname(int color)
 {
 	switch(color)
@@ -823,7 +798,7 @@ void and_putstr_ex(winid wid, int attr, const char *str, int append, int nhcolor
 	if(!str || !*str)
 		return;
 	jbyteArray jstr = create_bytearray(str);
-	JNICallV(jPutString, wid, attr, jstr, append, nhcolor_to_RGB(nhcolor));
+	JNICallV(jPutString, wid, attr, jstr, append, nhcolor);
 	destroy_jobject(jstr);
 }
 
@@ -848,7 +823,7 @@ void and_putstr(winid wid, int attr, const char *str)
 
 void and_set_health_color(int nhcolor)
 {
-	JNICallV(jSetHealthColor, nhcolor_to_RGB(nhcolor));
+	JNICallV(jSetHealthColor, nhcolor);
 }
 
 void and_bot_updated()
@@ -1004,7 +979,7 @@ void and_status_init(void)
 	(*jEnv)->CallVoidMethod(jEnv, jAppInstance, jStatusInit);
 }
 
-void and_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
+void and_status_enablefield(int fieldidx, const char *nm, const char *fmt, BOOLEAN_P enable)
 {
 	// Update the C-side activefields array
 	status_activefields[fieldidx] = enable;
@@ -1300,7 +1275,7 @@ void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, 
 		tile = glyph2tile[glyph];
 
 	if(iflags.use_menu_color && get_menu_coloring((char*)str, &color, &attr)) {
-		color = nhcolor_to_RGB(color);
+		/* color is already the index */
 	} else {
 		color = -1;
 	}
@@ -1574,7 +1549,7 @@ void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
 	if(!iflags.use_inverse)
 		special &= ~MG_DETECT;
 
-	JNICallV(jPrintTile, wid, x, y, tile, bkglyph, ch, nhcolor_to_RGB(col), special);
+	JNICallV(jPrintTile, wid, x, y, tile, bkglyph, ch, col, special);
 }
 
 //____________________________________________________________________________________
@@ -1804,7 +1779,7 @@ char and_yn_function(const char *question, const char *choices, CHAR_P def)
 		and_putstr(WIN_MESSAGE, ATR_BOLD, message);
 		if(iflags.force_invmenu)
 		{
-			JNICallV(jShowDPad);
+			JNICallV(jHighlightDPad);
 			ch = and_nhgetch();
 			return ch;
 		}
@@ -2292,8 +2267,6 @@ void and_delay_output()
 void and_change_color(int color_number, long rgb, int reverse)
 {
 	// debuglog("and_change_color %d == 0x%X %s", color_number, rgb, reverse?" reverse":"");
-	if(color_number >= 0 && color_number < CLR_MAX)
-		palette[color_number] = 0xFF000000 | rgb;
 }
 
 //____________________________________________________________________________________
