@@ -2,54 +2,43 @@
   "version": 1,
   "widgets": [
     {
-      "type": "status",
-      "anchor": {
-        "horizontal": "LEFT",
-        "vertical": "TOP",
-        "marginLeft": "0dp",
-        "marginTop": "0dp"
-      },
-      "size": {
-        "width": "100%",
-        "height": "40dp"
-      },
-      "properties": {
-        "opacity": 255,
-        "fontSize": 12
-      }
-    },
-    {
       "type": "message",
       "anchor": {
         "horizontal": "LEFT",
         "vertical": "TOP",
-        "marginLeft": "0dp",
-        "marginTop": "40dp"
+        "marginLeft": "8dp",
+        "marginRight": "8dp",
+        "marginTop": "0dp"
       },
       "size": {
-        "width": "100%",
-        "height": "60dp"
+        "width": "MATCH_PARENT",
+        "height": "120dp"
       },
       "properties": {
         "opacity": 255,
-        "fontSize": 12,
+        "fontSize": 18,
         "rows": 3
       }
     },
     {
-      "type": "dpad",
+      "type": "command_palette",
       "anchor": {
-        "horizontal": "RIGHT",
-        "vertical": "BOTTOM",
-        "marginRight": "10dp",
-        "marginBottom": "10dp"
+        "horizontal": "LEFT",
+        "vertical": "TOP",
+        "marginLeft": "8dp",
+        "marginRight": "8dp",
+        "marginTop": "120dp"
       },
       "size": {
-        "width": "140dp",
-        "height": "140dp"
+        "width": "MATCH_PARENT",
+        "height": "MATCH_PARENT"
       },
       "properties": {
-        "opacity": 191
+        "opacity": 255,
+        "fontSize": 12,
+        "horizontal": false,
+        "columns": 4,
+        "contextualOnly": false
       }
     }
   ]
