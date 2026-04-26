@@ -2,7 +2,7 @@
   "version": 1,
   "widgets": [
     {
-      "type": "status",
+      "type": "command_palette",
       "anchor": {
         "horizontal": "LEFT",
         "vertical": "TOP",
@@ -10,7 +10,68 @@
         "marginTop": "0dp"
       },
       "size": {
-        "width": "50%",
+        "width": "80dp",
+        "height": "MATCH_PARENT"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 14,
+        "horizontal": false,
+        "columns": 1,
+        "contextualOnly": true,
+        "pinnedCommands": [
+          "s"
+        ]
+      }
+    },
+    {
+      "type": "command_palette",
+      "anchor": {
+        "horizontal": "RIGHT",
+        "vertical": "TOP",
+        "marginRight": "0dp",
+        "marginTop": "0dp",
+        "marginBottom": "176dp"
+      },
+      "size": {
+        "width": "160dp",
+        "height": "MATCH_PARENT"
+      },
+      "properties": {
+        "opacity": 191,
+        "fontSize": 14,
+        "horizontal": false,
+        "columns": 2,
+        "contextualOnly": false
+      }
+    },
+    {
+      "type": "dpad",
+      "anchor": {
+        "horizontal": "RIGHT",
+        "vertical": "BOTTOM",
+        "marginRight": "0dp",
+        "marginBottom": "8dp"
+      },
+      "size": {
+        "width": "160dp",
+        "height": "160dp"
+      },
+      "properties": {
+        "opacity": 191
+      }
+    },
+    {
+      "type": "status",
+      "anchor": {
+        "horizontal": "CENTER",
+        "vertical": "TOP",
+        "marginLeft": "88dp",
+        "marginRight": "168dp",
+        "marginTop": "0dp"
+      },
+      "size": {
+        "width": "MATCH_PARENT",
         "height": "50dp"
       },
       "properties": {
@@ -21,35 +82,20 @@
     {
       "type": "message",
       "anchor": {
-        "horizontal": "RIGHT",
-        "vertical": "TOP",
-        "marginRight": "0dp",
-        "marginTop": "0dp"
+        "horizontal": "CENTER",
+        "vertical": "BOTTOM",
+        "marginLeft": "88dp",
+        "marginRight": "168dp",
+        "marginBottom": "0dp"
       },
       "size": {
-        "width": "50%",
+        "width": "MATCH_PARENT",
         "height": "50dp"
       },
       "properties": {
         "opacity": 191,
         "fontSize": 14,
         "rows": 2
-      }
-    },
-    {
-      "type": "dpad",
-      "anchor": {
-        "horizontal": "RIGHT",
-        "vertical": "BOTTOM",
-        "marginRight": "0dp",
-        "marginBottom": "16dp"
-      },
-      "size": {
-        "width": "180dp",
-        "height": "180dp"
-      },
-      "properties": {
-        "opacity": 191
       }
     }
   ]
