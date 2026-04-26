@@ -44,7 +44,7 @@
         "horizontal": "CENTER",
         "vertical": "BOTTOM",
         "marginLeft": "0dp",
-        "marginBottom": "70dp"
+        "marginBottom": "8dp"
       },
       "size": {
         "width": "200dp",

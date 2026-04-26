@@ -42,7 +42,7 @@
         "horizontal": "RIGHT",
         "vertical": "BOTTOM",
         "marginRight": "0dp",
-        "marginBottom": "0dp"
+        "marginBottom": "16dp"
       },
       "size": {
         "width": "180dp",
