@@ -37,23 +37,6 @@
       }
     },
     {
-      "type": "contextual",
-      "anchor": {
-        "horizontal": "LEFT",
-        "vertical": "BOTTOM",
-        "marginLeft": "0dp",
-        "marginBottom": "0dp"
-      },
-      "size": {
-        "width": "70%",
-        "height": "45dp"
-      },
-      "properties": {
-        "horizontal": true,
-        "opacity": 191
-      }
-    },
-    {
       "type": "dpad",
       "anchor": {
         "horizontal": "RIGHT",
