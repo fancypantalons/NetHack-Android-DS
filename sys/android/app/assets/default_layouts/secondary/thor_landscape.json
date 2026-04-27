@@ -35,7 +35,7 @@
       },
       "properties": {
         "opacity": 255,
-        "fontSize": 12,
+        "fontSize": 18,
         "horizontal": false,
         "columns": 4,
         "contextualOnly": false
