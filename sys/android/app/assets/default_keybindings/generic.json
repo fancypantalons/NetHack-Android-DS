@@ -13,7 +13,7 @@
     { "chord": "BUTTON_X",      "cmd": "e" },
     { "chord": "BUTTON_Y",      "cmd": "i" },
     { "chord": "BUTTON_START",  "ui": "OPEN_DRAWER", "locked": true },
-    { "chord": "BUTTON_SELECT", "ui": "OPEN_COMMAND_PALETTE" },
+    { "chord": "BUTTON_SELECT", "ui": "OPEN_COMMAND_PICKER" },
     { "chord": "L1+BUTTON_A",   "cmd": "a" },
     { "chord": "L1+BUTTON_B",   "cmd": "w" },
     { "chord": "L1+BUTTON_X",   "cmd": "W" },

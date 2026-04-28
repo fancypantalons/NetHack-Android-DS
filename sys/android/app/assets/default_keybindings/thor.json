@@ -15,7 +15,7 @@
     { "chord": "L3",            "ui": "RECENTER_MAP" },
     { "chord": "R3",            "cmd": ";" },
     { "chord": "BUTTON_START",  "ui": "OPEN_DRAWER", "locked": true },
-    { "chord": "BUTTON_SELECT", "ui": "OPEN_COMMAND_PALETTE" },
+    { "chord": "BUTTON_SELECT", "ui": "OPEN_COMMAND_PICKER" },
     { "chord": "L1+BUTTON_A",   "cmd": "a" },
     { "chord": "L1+BUTTON_B",   "cmd": "w" },
     { "chord": "L1+BUTTON_X",   "cmd": "W" },
