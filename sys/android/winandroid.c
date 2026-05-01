@@ -43,7 +43,7 @@ static char* and_input_buffer_pop_all()
 	return buf;
 }
 
-JNIEXPORT void JNICALL Java_com_tbd_forkfront_NetHackIO_pushInput(JNIEnv* env, jobject thiz, jstring str)
+JNIEXPORT void JNICALL Java_com_tbd_forkfront_engine_NetHackIO_pushInput(JNIEnv* env, jobject thiz, jstring str)
 {
 	const char* pChars = (*env)->GetStringUTFChars(env, str, 0);
 	if (pChars)
@@ -283,7 +283,7 @@ void destroy_jobject(jstring jstr)
 #define JNICallO(func, ...) (*jEnv)->CallObjectMethod(jEnv, jAppInstance, func, ## __VA_ARGS__);
 
 //____________________________________________________________________________________
-void Java_com_tbd_forkfront_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstring path, jstring username)
+void Java_com_tbd_forkfront_engine_NetHackIO_RunNetHack(JNIEnv* env, jobject thiz, jstring path)
 {
 	char* params[10];
 	const char* pChars;
@@ -371,7 +371,7 @@ boolean SaveAndExit()
 }
 
 //____________________________________________________________________________________
-void Java_com_tbd_forkfront_NetHackIO_SaveNetHackState(JNIEnv* env, jobject thiz)
+void Java_com_tbd_forkfront_engine_NetHackIO_SaveNetHackState(JNIEnv* env, jobject thiz)
 {
 	if(!program_state.gameover && program_state.something_worth_saving)
 		save_currentstate();

@@ -29,7 +29,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="com.tbd.forkfront.Settings"
+			android:name="com.tbd.forkfront.settings.Settings"
 			android:label="NetHack Settings"
 			android:parentActivityName="com.tbd.forkfront.ForkFront"
 			android:exported="true">
