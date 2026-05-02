@@ -31,20 +31,25 @@ This port is built around a few firm ideas:
 
 Like the [original project this is based on](https://github.com/gurrhack/NetHack-Android/), this port supports tapping to control as well as a widget overlay system allowing for deep customization:
 
+https://github.com/user-attachments/assets/64e5a21e-5a46-4c18-8045-59dd401f6e3b
 
 ### Landscape — Touch Mode
 
 Orientation-specific layouts allow for unique portrait and landscape layouts.
 
+https://github.com/user-attachments/assets/24721591-48c7-439e-9c49-92b2c60238ce
 
 ### Dual Screen — Gamepad
 
 In truth the reason this port exists is because I wanted something I could play on my Ayn Thor, so this port includes first-class support for dual-screen devices and gamepads:
 
+https://github.com/user-attachments/assets/9ed3e8fd-cebb-450d-806b-4d1c1f3b3503
 
 ### Overlay Editor
 
 The overlay system is designed to allow the user to relocate nearly any on-screen element, allowing for deep customization:
+
+https://github.com/user-attachments/assets/9ae8ba2b-7f65-4efd-8f7e-309b227151b7
 
 ---
 
