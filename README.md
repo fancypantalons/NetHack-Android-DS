@@ -16,10 +16,8 @@ This port is built around a few firm ideas:
 - **Touch and gamepad first.** A physical keyboard or mouse should never be required for gameplay.
   Navigation, commands, and menus all work through touch gestures or a physical gamepad. The soft
   keyboard only appears for text entry.
-- **Native Android experience.** This is not a terminal emulator bolted onto a map view. Gestures,
-  haptics, and layout patterns follow Android conventions. The philosophy is borrowed from
-  [NetHackDS](https://www.nintendo-ds.dk/nethackds.html) — a port that understood what "native"
-  means on a non-PC platform.
+- **Native Android experience.** This port tries to create a gaming experience that feels natural and not like a soft keyboard bolted onto a terminal-native game. In this way it borrows a lot from my work on
+  [NetHackDS](https://github.com/fancypantalons/NetHack).
 - **Radical configurability.** NetHack is a deep game. The interface must accommodate diverse
   playstyles rather than enforcing a single correct way to play.
 - **Always fullscreen and immersive.** It's a game. There's no good reason to give up screen real
@@ -61,7 +59,7 @@ The port follows a **thick native, thin wrapper** model:
   Android NDK. The core game logic is untouched.
 - A thin JNI bridge (`sys/android/winandroid.c`) connects the engine to the Java UI layer by
   implementing NetHack's standard `window_procs` interface.
-- The UI is implemented by [ForkFront](sys/android/forkfront/README.md), a dedicated Android
+- The UI is implemented by [ForkFront-DS](https://github.com/fancypantalons/ForkFront-Android-DS), a dedicated Android
   library that lives in `sys/android/forkfront/` as a Git submodule. It handles rendering, input,
   menus, dialogs, and settings.
 
@@ -94,7 +92,7 @@ This project is a hard fork of [NetHack-Android](https://github.com/gurrhack/Net
 gurrhack, which provided the original native bridge and build system for NetHack 3.6.7 on Android.
 The UI library, [ForkFront](sys/android/forkfront/README.md), is similarly a hard fork of gurrhack's
 [ForkFront-Android](https://github.com/gurrhack/ForkFront-Android). Both forks diverge substantially
-in architecture and design philosophy, and there is no intention to merge changes back upstream.
+in architecture and design philosophy, and while it could not exist without all that previous hard work, I've opted to deviate pretty substantially without a focus on contributing back to the original (now fairly quiet) project.
 
 NetHack itself is the work of the [NetHack Dev Team](https://www.nethack.org/) and a long line of
 contributors stretching back to 1987. See [`README.NetHack`](README.NetHack) for the original
