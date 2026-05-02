@@ -1,8 +1,7 @@
 # NetHack Android DS
 
 A modernized Android port of [NetHack 3.6.7](https://www.nethack.org/), built for touchscreens and
-physical gamepads. This is a personal, in-development project — expect rough edges, but also expect
-it to keep getting better.
+physical gamepads. This is a personal, in-development project meant to scratch a personal itch, so expect rough edges.
 
 Releases (APK downloads) are posted on the
 [GitHub releases page](https://github.com/fancypantalons/NetHack-Android-DS/releases).
