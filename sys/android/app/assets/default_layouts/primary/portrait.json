@@ -12,7 +12,7 @@
       },
       "size": {
         "width": "MATCH_PARENT",
-        "height": "60dp"
+        "height": "75dp"
       },
       "properties": {
         "opacity": 191,
@@ -26,7 +26,7 @@
         "vertical": "TOP",
         "marginLeft": "15dp",
         "marginRight": "15dp",
-        "marginTop": "60dp"
+        "marginTop": "75dp"
       },
       "size": {
         "width": "MATCH_PARENT",

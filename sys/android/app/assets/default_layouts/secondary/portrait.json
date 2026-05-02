@@ -11,7 +11,7 @@
       },
       "size": {
         "width": "100%",
-        "height": "50dp"
+        "height": "75dp"
       },
       "properties": {
         "opacity": 191,
@@ -24,7 +24,7 @@
         "horizontal": "LEFT",
         "vertical": "TOP",
         "marginLeft": "0dp",
-        "marginTop": "50dp"
+        "marginTop": "75dp"
       },
       "size": {
         "width": "100%",
