@@ -7,12 +7,28 @@ android {
   compileSdk 34
   buildToolsVersion "35.0.0"
 
+  signingConfigs {
+    release {
+      storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
+      storePassword 'android'
+      keyAlias 'androiddebugkey'
+      keyPassword 'android'
+    }
+  }
+
   defaultConfig {
     minSdk 33
     targetSdk 34
-    versionName '3.6.7-1'
-    versionCode 3671
+    versionName '2026.05.01'
+    versionCode 20260501
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    release {
+      debuggable false
+      signingConfig signingConfigs.release
+    }
   }
 
   compileOptions {
@@ -84,10 +100,39 @@ task alignApk {
     }
 }
 
+task alignReleaseApk {
+    doLast {
+        def buildTools = android.sdkDirectory.toPath()
+            .resolve("build-tools")
+            .resolve(android.buildToolsVersion.toString())
+        def zipalign = buildTools.resolve("zipalign").toString()
+        def apksigner = buildTools.resolve("apksigner").toString()
+
+        def releaseApk = file("build/outputs/apk/release/app-release.apk")
+        if (releaseApk.exists()) {
+            println "Aligning ${releaseApk} to 16KB pages and 4-byte general alignment..."
+            def tempApk = file("build/outputs/apk/release/app-release-aligned.apk")
+            exec {
+                commandLine zipalign, "-f", "-P", "16", "4", releaseApk, tempApk
+            }
+            exec {
+                commandLine apksigner, "sign",
+                    "--ks", "${System.getProperty('user.home')}/.android/debug.keystore",
+                    "--ks-pass", "pass:android", tempApk
+            }
+            releaseApk.delete()
+            tempApk.renameTo(releaseApk)
+        }
+    }
+}
+
 // Hook it after the APK is created but before installation
 tasks.whenTaskAdded { task ->
     if (task.name == 'packageDebug') {
         task.finalizedBy alignApk
+    }
+    if (task.name == 'packageRelease') {
+        task.finalizedBy alignReleaseApk
     }
 }
 
