@@ -1,4 +1,12 @@
-# NetHack Android DS
+# NetHack Android DS — Archived
+
+> **This repository is archived and no longer maintained.**
+>
+> Development has moved to [**Amphitere**](https://github.com/fancypantalons/Amphitere), a renamed
+> and restructured continuation of this project. Please use Amphitere for new installations,
+> bug reports, and contributions.
+
+---
 
 A modernized Android port of [NetHack 3.6.7](https://www.nethack.org/), built for touchscreens and
 physical gamepads. This is a personal, in-development project meant to scratch a personal itch, so expect rough edges.
